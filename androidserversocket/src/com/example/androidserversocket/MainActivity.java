@@ -2,8 +2,6 @@ package com.example.androidserversocket;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
@@ -22,6 +20,7 @@ public class MainActivity extends Activity {
 	TextView info, infoip, msg;
 	String message = "";
 	ServerSocket serverSocket;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +63,7 @@ public class MainActivity extends Activity {
 
 					@Override
 					public void run() {
-						info.setText("I'm waiting here: "
+						info.setText("Porta: "
 								+ serverSocket.getLocalPort());
 					}
 				});
@@ -73,10 +72,8 @@ public class MainActivity extends Activity {
 					Socket socket = serverSocket.accept();
 					count++;
 					DataInputStream dis = new DataInputStream(socket.getInputStream());
-					message = dis.readLine()+"\n";
-					
-					//message += "#" + count + " from " + socket.getInetAddress()
-					//		+ ":" + socket.getPort() + "\n";
+					message =count+" - "+dis.readLine()+" \n";
+
 					MainActivity.this.runOnUiThread(new Runnable() {
 
 						@Override
@@ -84,64 +81,11 @@ public class MainActivity extends Activity {
 							msg.setText(message);
 						}
 					});
-
-					SocketServerReplyThread socketServerReplyThread = new SocketServerReplyThread(
-							socket, count);
-					socketServerReplyThread.run();
-
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-
-	}
-
-	private class SocketServerReplyThread extends Thread {
-
-		private Socket hostThreadSocket;
-		int cnt;
-
-		SocketServerReplyThread(Socket socket, int c) {
-			hostThreadSocket = socket;
-			cnt = c;
-		}
-
-		@Override
-		public void run() {
-			OutputStream outputStream;
-			String msgReply = "Hello from Android, you are #" + cnt;
-
-			try {
-				outputStream = hostThreadSocket.getOutputStream();
-				PrintStream printStream = new PrintStream(outputStream);
-				printStream.print(msgReply);
-				printStream.close();
-
-				message += "replayed: " + msgReply + "\n";
-
-				MainActivity.this.runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						msg.setText(message);
-					}
-				});
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				message += "Something wrong! " + e.toString() + "\n";
-			}
-
-			MainActivity.this.runOnUiThread(new Runnable() {
-
-				@Override
-				public void run() {
-					msg.setText(message);
-				}
-			});
 		}
 
 	}
@@ -160,7 +104,7 @@ public class MainActivity extends Activity {
 					InetAddress inetAddress = enumInetAddress.nextElement();
 
 					if (inetAddress.isSiteLocalAddress()) {
-						ip += "SiteLocalAddress: " 
+						ip += "Meu ip: " 
 								+ inetAddress.getHostAddress() + "\n";
 					}
 
