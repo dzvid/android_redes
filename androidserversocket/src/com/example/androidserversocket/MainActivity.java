@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
 	private class SocketServerThread extends Thread {
 
 		static final int SocketServerPORT = 8080;
-		int count = 0;
+		//int count = 0;
 
 		@Override
 		public void run() {
@@ -70,9 +70,9 @@ public class MainActivity extends Activity {
 
 				while (true) {
 					Socket socket = serverSocket.accept();
-					count++;
+					//count++;
 					DataInputStream dis = new DataInputStream(socket.getInputStream());
-					message =count+" - "+dis.readLine()+" \n";
+					message =dis.readLine()+" \n";
 
 					MainActivity.this.runOnUiThread(new Runnable() {
 
